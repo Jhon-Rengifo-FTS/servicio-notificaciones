@@ -1,4 +1,4 @@
-FROM node:alpine AS development
+FROM node:22-alpine AS development
 
 WORKDIR /usr/src/app
 
@@ -8,9 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build notificador_email
+RUN npm run build:email
 
-FROM node:alpine AS production
+FROM node:22-alpine AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -31,4 +31,4 @@ RUN apk update && apk add --no-cache tzdata && \
     echo "America/Bogota" > /etc/timezone && \
     apk del tzdata
 
-CMD ["node", "dist/apps/notificador_email/main.js"]
+CMD ["node", "dist/apps/notificaciones_email/main"]
