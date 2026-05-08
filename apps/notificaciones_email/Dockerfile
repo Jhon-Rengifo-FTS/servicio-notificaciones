@@ -31,4 +31,4 @@ RUN apk update && apk add --no-cache tzdata && \
     echo "America/Bogota" > /etc/timezone && \
     apk del tzdata
 
-CMD ["node", "dist/apps/notificador_email/main"]
+CMD ["node", "dist/apps/notificador_email/main.js"]
