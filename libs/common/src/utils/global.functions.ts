@@ -12,7 +12,7 @@ export async function registrarEnvioEnCache(
     const to = data?.to || 'unknown';
     const cacheKey = buildSentCacheKey(key, to);
     await cacheService.set(cacheKey, data, ttlMs);
-    logger.log(`El evento ${cacheKey} se ha registrado exitosamente en Redis: ${cacheKey}`);
+    logger.log(`El evento ${cacheKey} se ha registrado exitosamente en Redis`);
     return cacheKey;
   } catch (error) {
     logger.warn('Error al intentar guardar en Redis.');
