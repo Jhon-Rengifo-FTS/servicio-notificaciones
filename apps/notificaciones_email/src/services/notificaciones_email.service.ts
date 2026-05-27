@@ -26,28 +26,30 @@ export class NotificacionesEmailService {
       this.logger.warn('Datos incompletos para email.');
       return;
     }
-    try {
-      this.logger.log(
-        `Enviando el correo electrónico de ${subject} a ${to}`,
-      );
-      await this.mailerService.sendMail({
-        to,
-        subject,
-        template,
-        attachments,
-        context: context ?? {},
-      });
+    const destinatarios = this.obtenerDestinatarios(to);
 
-      this.logger.log(`Correo electrónico enviado a ${to} exitosamente...`);
+    for (const correo of destinatarios) {
       try {
+        this.logger.log(
+          `Enviando el correo electrónico de ${subject} a ${correo}`,
+        );
+
+        await this.mailerService.sendMail({
+          to: correo,
+          subject,
+          template,
+          attachments,
+          context: context ?? {},
+        });
+
         const cacheKey = await registrarEnvioEnCache(
           this.cacheService,
           {
-            to,
+            to: correo,
             subject,
             template,
             context,
-            attachments: this.countAttachments(attachments, to),
+            attachments: this.countAttachments(attachments, correo),
             status: 'sent',
             jobId,
             sentAt: new Date().toISOString(),
@@ -55,28 +57,22 @@ export class NotificacionesEmailService {
           EMAIL_SENT_CACHE_KEY,
           getTTLConfig(this.configService, 'EMAIL_CACHE_TTL_MS'),
         );
-        this.logger.debug(
-          `Correo electrónico registrado en redis exitosamente: ${cacheKey}`,
-        );
+
+        this.logger.debug(`Correo registrado en redis: ${cacheKey}`);
       } catch (error) {
-        this.logger.error(
-          'Error al registrar el correo electrónico en redis...',
-          error,
-        );
-      }
-    } catch (error) {
-      try {
         const errorMessage = this.getErrorMessage(error);
         const errorStack = error instanceof Error ? error.stack : undefined;
-        this.logger.error('Error al enviar el correo electrónico...', error);
+
+        this.logger.error(`Error al enviar correo a ${correo}`, error);
+
         const cacheKey = await registrarEnvioEnCache(
           this.cacheService,
           {
-            to,
+            to: correo,
             subject,
             template,
             context,
-            attachments: this.countAttachments(attachments, to),
+            attachments: this.countAttachments(attachments, correo),
             status: 'error',
             error: errorMessage,
             stack: errorStack,
@@ -86,12 +82,8 @@ export class NotificacionesEmailService {
           EMAIL_ERROR_CACHE_KEY,
           getTTLConfig(this.configService, 'EMAIL_CACHE_TTL_MS'),
         );
-        this.logger.log(`Error del correo electrónico registrado: ${cacheKey}`);
-      } catch (error) {
-        this.logger.error(
-          'Error al registrar el error del correo electrónico...',
-          error,
-        );
+
+        this.logger.log(`Error del correo registrado: ${cacheKey}`);
       }
     }
   }
@@ -119,6 +111,20 @@ export class NotificacionesEmailService {
       return JSON.stringify(error) ?? String(error);
     } catch {
       return String(error);
+    }
+  }
+
+  private obtenerDestinatarios(to: string): string[] {
+    try {
+      const parsed = JSON.parse(to);
+
+      if (Array.isArray(parsed?.correos)) {
+        return parsed.correos.filter(Boolean);
+      }
+
+      return [to];
+    } catch {
+      return [to];
     }
   }
 }

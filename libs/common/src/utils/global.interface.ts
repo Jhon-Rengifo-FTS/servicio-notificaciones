@@ -25,4 +25,29 @@ export interface EmailInterface {
   template: string;
   attachments?: any[];
   context: Record<any, any>;
+  correos: string[];
 }
+export interface PushInterface {
+  token?: string;
+  title?: string;
+  body?: string;
+  data?: Record<string, string>;
+}
+
+
+export type PushSocketPayload = {
+  cacheKey?: string;
+  title?: string;
+  body?: string;
+  data?: Record<string, unknown>;
+  status?: string;
+  read?: boolean;
+  jobId?: string;
+  sentAt?: string;
+};
+
+export type JoinRoomPayload = {
+  room?: string;
+  cuentaId?: string | number;
+  usuarioId?: string | number;
+};
