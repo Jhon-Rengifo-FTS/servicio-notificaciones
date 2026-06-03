@@ -16,7 +16,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   await app.listen(Number(configService.get('NOTIFICADOR_EMAIL_PORT')));
-  console.log('Notificador de correo corriendo en el puerto: ' + Number(configService.get('NOTIFICADOR_EMAIL_PORT')))
-
+  console.log('Notificador de correo corriendo en el puerto: ' + Number(configService.get('NOTIFICADOR_EMAIL_PORT')));
 }
 bootstrap();

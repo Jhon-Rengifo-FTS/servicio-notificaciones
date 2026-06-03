@@ -11,7 +11,7 @@ import { AppCacheModule } from '@app/common';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'apps/notificaciones_email/.env',
+      envFilePath: './.env',
     }),
     RmqModule,
     AppCacheModule,

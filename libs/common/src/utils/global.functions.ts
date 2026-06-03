@@ -9,7 +9,7 @@ export async function registrarEnvioEnCache(
   ttlMs?: number,
 ): Promise<string> {
   try {
-    const to = data?.to || 'unknown';
+    const to = data?.to || data?.data?.cuentaId || 'unknown';
     const cacheKey = buildSentCacheKey(key, to);
     await cacheService.set(cacheKey, data, ttlMs);
     logger.log(`El evento ${cacheKey} se ha registrado exitosamente en Redis`);
