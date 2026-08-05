@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 import { NotificacionesPushService } from '../services/notificaciones_push.service';
 import { EVENT_PATTERN_NOTIFICADOR_PUSH, PushInterface, RmqService } from '@app/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
@@ -20,8 +20,11 @@ export class NotificacionesPushController {
   }
 
   @Get('obtener-notificaciones/:usuarioId')
-  obtenerNotificaciones(@Param('usuarioId') usuarioId: string) {
-    return this.notificacionesPushService.obtenerNotificaciones(usuarioId);
+  obtenerNotificaciones(
+    @Param('usuarioId') usuarioId: string,
+    @Query('destino') destino?: string,
+  ) {
+    return this.notificacionesPushService.obtenerNotificaciones(usuarioId, destino);
   }
 
   @Patch('notificaciones/:usuarioId/leida')
