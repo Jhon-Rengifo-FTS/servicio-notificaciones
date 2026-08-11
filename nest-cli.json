@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/notificaciones_email",
   "projects": {
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
     "notificaciones_email": {
       "type": "application",
       "root": "apps/notificaciones_email",
@@ -28,13 +37,13 @@
         "tsConfigPath": "apps/notificaciones_push/tsconfig.app.json"
       }
     },
-    "common": {
-      "type": "library",
-      "root": "libs/common",
-      "entryFile": "index",
-      "sourceRoot": "libs/common/src",
+    "notificaciones_telegram": {
+      "type": "application",
+      "root": "apps/notificaciones_telegram",
+      "entryFile": "main",
+      "sourceRoot": "apps/notificaciones_telegram/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/common/tsconfig.lib.json"
+        "tsConfigPath": "apps/notificaciones_telegram/tsconfig.app.json"
       }
     }
   }
