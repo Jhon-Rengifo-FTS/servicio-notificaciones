@@ -33,7 +33,11 @@ export interface PushInterface {
   body?: string;
   data?: Record<string, string>;
 }
-
+export interface TelegramInterface {
+  chatId: string;
+  message: string;
+  jobId: string;
+}
 
 export type PushSocketPayload = {
   cacheKey?: string;

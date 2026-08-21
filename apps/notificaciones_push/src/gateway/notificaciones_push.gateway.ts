@@ -60,8 +60,21 @@ export class NotificacionesPushGateway
     this.server.to(room).emit('notificaciones_push_limpiadas');
   }
 
+  private getPerfilRoom(perfilId: unknown): string | undefined {
+    if (perfilId === undefined || perfilId === null || perfilId === '') {
+      return undefined;
+    }
+
+    const perfil = perfilId.toString();
+    return perfil.startsWith('perfil:') ? perfil : 'perfil:' + perfil;
+  }
+
   private getHandshakeRooms(client: Socket): string[] {
     return [
+      client.handshake.auth?.room ?? client.handshake.query?.room,
+      this.getPerfilRoom(
+        client.handshake.auth?.perfilId ?? client.handshake.query?.perfilId,
+      ),
       client.handshake.auth?.usuarioId ?? client.handshake.query?.usuarioId,
       client.handshake.auth?.cuentaId ?? client.handshake.query?.cuentaId,
     ]
